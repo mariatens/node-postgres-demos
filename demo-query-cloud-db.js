@@ -13,7 +13,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 async function doDemo() {
-  // To connect to a heroku db you need to specify an object value for the ssl option
+  // To connect to most cloud-hosted dbs you need to specify an object value for the ssl option
   // (however, if you want to connect to a local db you should set this property to false).
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -24,7 +24,7 @@ async function doDemo() {
 
   await client.connect();
 
-  //Change the table name to match one in your heroku database!
+  //Change the table name to match one in your cloud-hosted database!
   const result = await client.query("SELECT *  FROM words;");
   for (let row of result.rows) {
     console.log(row);
