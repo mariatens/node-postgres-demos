@@ -6,12 +6,28 @@
 // Here, to our quiz data, either we'll add a 'poets' category and three poets,
 // or nothing at all.
 // Run this demo and check in your database that
-const { Pool } = require("pg");
-const pool = new Pool({ database: 'demos' });
+require("dotenv").config();
+
+const { Client } = require("pg");
+
 async function doDemo() {
+  try {
+    await doDemoPart1();
+  } catch (err) {
+    console.log("we EXPECT an exception here: ")
+    console.error(err);
+  }
+  console.log("continuing to part 2 - reconnect to db and see what's in categories...")
+  await doDemoPart2();
+}
+
+
+async function doDemoPart1() {
+  const client = new Client({ connectionString: process.env.DATABASE_URL });
+
   // note: we don't try/catch this because if connecting throws an exception
   // we don't need to dispose of the client (it will be undefined)
-  const client = await pool.connect();
+  await client.connect();
 
   try {
     await client.query("BEGIN"); //mark the transaction start
@@ -21,6 +37,7 @@ async function doDemo() {
       ["poets"]
     );
     const category_id = res.rows[0].id; //the category id for poets.
+    console.log("Successfully inserted a quiz category for poets");
     console.log("category_id for poets: ", category_id);
 
     await client.query("INSERT INTO words(category_id, word) VALUES ($1, $2)", [
@@ -45,17 +62,29 @@ async function doDemo() {
 
     await client.query("COMMIT"); //commit the transaction, if we get this far without error
   } catch (e) {
+    console.log("rolling back")
     await client.query("ROLLBACK"); //roll-back, if we get an error
+    console.log("sent ROLLBACK")
     throw e;
   } finally {
-    client.release();
+    client.end();
   }
+}
+
+async function doDemoPart2() {
+  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  await client.connect();
+  const dbResult = await client.query("SELECT * FROM categories");
+  console.table(dbResult.rows);
+  client.end();
 }
 
 console.log(
   `This example is programmed to fail at a later one of many inserts.
   The entire set of changes should be discarded by postgres 
-  i.e. you should afterwards find no category 'poets' in the categories table.
+  i.e. you should afterwards find no category 'poets' in the categories table, 
+  even though its insertion above was initially successful.
   ============================================================================
   `);
-doDemo().catch((e) => console.error(e.stack));
+
+doDemo();
