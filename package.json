@@ -1,7 +1,7 @@
 {
-  "name": "heroku-node-play",
-  "version": "1.0.0",
-  "description": "A set of examples for working with 'pg', the node-postgres library.",
+  "name": "js-node-postgres-demos",
+  "version": "1.0.1",
+  "description": "A set of js examples for working with 'pg', the node-postgres library.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
