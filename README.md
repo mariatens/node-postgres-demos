@@ -32,7 +32,7 @@ yarn
 to install the dependencies specified in `package.json`
 
 
-# Setting up your connection string (e.g. for connection to heroku)
+# Setting up your connection string (e.g. for connection to a cloud-hosted db)
 
 Some of the later demos require a connection string to be specified in .env:
 
