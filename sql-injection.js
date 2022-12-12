@@ -4,7 +4,7 @@ async function doDemo() {
   const client = new Client({ database: 'musicbase' });
   await client.connect();
 
-  const searchTerm = "ana";
+  const searchTerm = "'%';--";
 
   const text = `select * from artists where name like ${searchTerm}`; //this is now prone to sql injection attacks
 
