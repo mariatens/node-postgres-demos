@@ -1,12 +1,12 @@
 const { Client } = require("pg");
 
 async function doDemo() {
-  const client = new Client({ database: 'demos' });
+  const client = new Client({ database: 'musicbase' });
   await client.connect();
 
-  const searchTerm = "ing";
+  const searchTerm = "ana";
 
-  const text = "select * from words where word like $1";
+  const text = "select * from artists where name like $1";
   const values = [`%${searchTerm}%`];
 
   const res = await client.query(text, values);
