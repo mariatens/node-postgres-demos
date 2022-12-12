@@ -4,10 +4,11 @@ async function doDemo() {
   const client = new Client({ database: 'musicbase' });
   await client.connect();
 
-  const text = "select * from artists where category_id = $1";
-  const values = [1];
+  const searchTerm = "ana";
 
-  const res = await client.query(text, values);
+  const text = `select * from artists where name like ${searchTerm}`; //this is now prone to sql injection attacks
+
+  const res = await client.query(text);
   console.log(res.rows);
   await client.end();
 }
